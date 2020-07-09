@@ -1,33 +1,47 @@
-library("FSinR")
+# Section Shiny ------------------------------
 library("shiny")
-library("stringr")
 library("shinydashboard")
-library("naniar")
-library("skimr")
-library("dplyr")
-library("discretization")
-library('data.table')
 library("DT")
+library('formattable')
+library("sortable")
+# Section data visualization ------------------------------
+library('GGally')
+library("plotly")
 library("ggplot2")
+library("plotrix")
+# Section Collection of data ------------------------------
+library("openxlsx")
+library("readxl")
+# Section Missing values ------------------------------
+library("naniar")
+library("missMDA")
+library('missForest')
+# Section Exploring Data ------------------------------
+library("skimr")
+library("FSinR")
 library("FactoMineR")
 library("factoextra")
 library('psych')
-library('GGally')
 library("e1071")
-library("plotly")
-library("smbinning")
-library("openxlsx")
-library('grid')
+# Section Dealing with characters ------------------------------
+library("stringr")
+# Section Data wrangling ------------------------------
+library("dplyr")
 library('tidyr')
-library("missMDA")
+# Section Feature engineering ------------------------------
+library("discretization")
+library("smbinning")
+# Section big data ------------------------------
+library('data.table')
+# Section Algorithms ------------------------------
+library('grid')
 library("VIM")
 library("mice")
-library("plotrix")
 library("caret")
 library("rsample")
 library("dendextend")
 library("ClustOfVar")
-library('formattable')
-library("sortable")
-library('missForest')
+
+
+
 
