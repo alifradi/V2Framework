@@ -1,7 +1,8 @@
 CramerSelection <- function(data, target){
   features <- names(data[,names(data) != target])
   x<-cramer(data, target, features)
-  df = data.frame(Features=names(x), CramerV=x)
+  df = data.frame(Features=names(x), CramerV=x) %>% 
+    arrange(desc(CramerV))
   return(df)
 }
 
