@@ -84,7 +84,7 @@ server <- function(input, output) {
     }
   })
   output$FileInputUI <-renderUI({
-    if(input$FileType!='_'){fileInput('fileIN', 'Upload your  RDS File here')} else
+    if(input$FileType!='_'){fileInput('fileIN', 'Upload your data File here')} else
     {return()}
   })
   output$column <- renderUI({
