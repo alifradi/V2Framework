@@ -96,20 +96,22 @@ body <- dashboardBody(
             
             
     ),
-    # tabItem(tabName = "CSVInput", h2("Compress CSV to RDS"),
-    #         
-    #         fluidRow(box(background = "navy", solidHeader = TRUE,
-    #                      fileInput('fileInCSV', 'Upload your  CSV File here'),
-    #                      uiOutput('selectSheetCSV'),
-    #                      downloadButton("asRDS", "As RDS data"), width = 3  ),
-    #                  box(background = "olive", solidHeader = TRUE,
-    #                      dataTableOutput("TABLookCSV"),style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-    #                      width = 9, title = 'Preview data: head' )) ,
-    #         uiOutput('columnCSV'),
-    #         verbatimTextOutput('strDataCSV') 
-    #         
-    #         
-    # ),
+    tabItem(tabName = "CSVInput", h2("Compress CSV to RDS"),
+            fluidRow(box(background = "navy", solidHeader = TRUE,
+                         fileInput('fileInCSV', 'Upload your  CSV File here'),
+                         downloadButton("asRDSCSV", "As RDS data"),
+                         width = 3  ),
+                      box(background = "olive", solidHeader = TRUE,
+                          dataTableOutput("TABLookCSV"),
+                          style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+                          width = 9, title = 'Preview data: head' )
+                     ),
+            uiOutput('columnCSV'),
+            verbatimTextOutput('strDataCSV') 
+         
+                 
+    ),
+    
     
     # Section Univariate descriptive analysis ------------------------------
     tabItem(tabName = "UVA", h2("Univariate descriptive analysis"),
@@ -218,7 +220,8 @@ body <- dashboardBody(
                   checkboxInput(label = 'Impute all', inputId = 'allNo',value = TRUE),
                   uiOutput('ImputeAt2'),
                   uiOutput("ImputationMethods"),
-                  downloadButton("dwnImp", "Download Imputed data"),
+                  downloadButton("dwnImp", "Download Imputed as CSV"),
+                  downloadButton("dwnImprds", "Download Imputed as RDS"),
                   uiOutput('varToPlot')
               )
               ,box(uiOutput('CompareImputedOrigPlot')) 
@@ -450,118 +453,111 @@ server <- function(input, output) {
   })
   # Section From CSV to correct format Server ------------------------------
   
-  # FromCSV <- reactive({
-  #   inFile <- input$fileInCSV
-  #   if (is.null(inFile)) return(NULL)
-  #   a<-readxl::read_excel(inFile$datapath)
-  #   a<-as.data.frame(a)
-  #   return(a)
-  # })
-  # output$selectSheet <- renderUI({
-  #   inFile <- input$fileInCSV
-  #   if (is.null(inFile)) return(NULL)
-  #   path<-inFile$datapath
-  #   selectInput(label = 'Select Excel Sheet', inputId = 'ExcelSheet', choices = getSheetNames(path))
-  #   
-  # })
-  # toCorrectFormatCSV <- reactive({
-  #   req(FromCSV)
-  #   data<-FromCSV()
-  #   
-  #   NUM <- input$rank_list_4
-  #   Logical <- input$rank_list_2
-  #   Factor <- input$rank_list_3
-  #   Char <- input$rank_list_1
-  #   
-  #   df = data.frame(matrix(ncol = 1, nrow = nrow(data)))
-  #   if(length(NUM)>0){
-  #     NumData <- data %>% mutate_if(names(data) %in% NUM, as.numeric)
-  #     NumData <-NumData[,NUM]
-  #     df = cbind(df,NumData)
-  #   }
-  #   if(length(Logical)>0){
-  #     LogData <- data %>% mutate_if(names(data) %in% Logical, as.logical)
-  #     LogData <-LogData[,Logical]
-  #     df = cbind(df,LogData)
-  #   }
-  #   if(length(Factor)>0){
-  #     FacData <- data %>% mutate_if(names(data) %in% Factor, factor)
-  #     FacData <-FacData[,Factor]
-  #     df = cbind(df,FacData)
-  #   }
-  #   if(length(Char)>0){
-  #     CharData <- data %>% mutate_if(names(data) %in% Char, as.character)
-  #     CharData <-CharData[,Char]
-  #     df = cbind(df,CharData)
-  #   }
-  #   df = df[,2:ncol(df)]
-  #   df
-  # })
-  # output$tabHEADCSV <-renderTable({
-  #   req(toCorrectFormatCSV)
-  #   data<-toCorrectFormatCSV()
-  #   data
-  # })
-  # output$TABLookCSV <-renderDataTable({
-  #   req(FromCSV)
-  #   data<-FromCSV()
-  #   head(data)
-  # })
-  # output$strDataCSV <-renderPrint({
-  #   req(toCorrectFormatCSV)
-  #   data<-toCorrectFormatCSV()
-  #   str(data)
-  # })
-  # output$asRDS <- downloadHandler(filename = function() {
-  #   paste0("RawDataCompressed_", Sys.Date(), ".rds")
-  # },
-  # content = function(file) {
-  #   save_list <- toCorrectFormatCSV()
-  #   saveRDS(save_list, file)
-  # })
-  # output$columnCSV <- renderUI({
-  #   data<-FromCSV()
-  #   if (is.null(FromCSV()))
-  #   {return()}
-  #   else
-  #   {
-  #     
-  #     NUM<-dplyr::select_if(as.data.frame(data), is.numeric)
-  #     Logica<-dplyr::select_if(as.data.frame(data), is.logical)
-  #     facto<-dplyr::select_if(as.data.frame(data), is.factor)
-  #     Char<-dplyr::select_if(as.data.frame(data), is.character)
-  #     
-  #     return(
-  #       bucket_list(
-  #         header = "Drag columns in the right bucket",
-  #         group_name = "bucket_list_group",
-  #         orientation = "horizontal",
-  #         
-  #         add_rank_list(
-  #           text = "Charachter",
-  #           labels = names(Char),
-  #           input_id = "rank_list_1"
-  #         ),
-  #         add_rank_list(
-  #           text = "Logical",
-  #           labels = names(Logica),
-  #           input_id = "rank_list_2"
-  #         ),
-  #         add_rank_list(
-  #           text = "Factor",
-  #           labels = names(facto),
-  #           input_id = "rank_list_3"
-  #         ),
-  #         add_rank_list(
-  #           text = "Numeric",
-  #           labels = names(NUM),
-  #           input_id = "rank_list_4"
-  #         )
-  #       )
-  #     )}
-  #   
-  # })
-  
+  FromCSV <- reactive({
+    inFile <- input$fileInCSV
+    if (is.null(inFile)) return(NULL)
+    a<-read.csv(inFile$datapath)
+    a<-as.data.frame(a)
+    return(a)
+  })
+  toCorrectFormatCSV <- reactive({
+    req(FromCSV)
+    data<-FromCSV()
+
+    NUM <- input$rank_list_4
+    Logical <- input$rank_list_2
+    Factor <- input$rank_list_3
+    Char <- input$rank_list_1
+
+    df = data.frame(matrix(ncol = 1, nrow = nrow(data)))
+    if(length(NUM)>0){
+      NumData <- data %>% mutate_if(names(data) %in% NUM, as.numeric)
+      NumData <-NumData[,NUM]
+      df = cbind(df,NumData)
+    }
+    if(length(Logical)>0){
+      LogData <- data %>% mutate_if(names(data) %in% Logical, as.logical)
+      LogData <-LogData[,Logical]
+      df = cbind(df,LogData)
+    }
+    if(length(Factor)>0){
+      FacData <- data %>% mutate_if(names(data) %in% Factor, factor)
+      FacData <-FacData[,Factor]
+      df = cbind(df,FacData)
+    }
+    if(length(Char)>0){
+      CharData <- data %>% mutate_if(names(data) %in% Char, as.character)
+      CharData <-CharData[,Char]
+      df = cbind(df,CharData)
+    }
+    df = df[,2:ncol(df)]
+    df
+  })
+  output$tabHEADCSV <-renderTable({
+    req(toCorrectFormatCSV)
+    data<-toCorrectFormatCSV()
+    data
+  })
+  output$TABLookCSV <-renderDataTable({
+    req(FromCSV)
+    data<-FromCSV()
+    head(data)
+  })
+  output$strDataCSV <-renderPrint({
+    req(toCorrectFormatCSV)
+    data<-toCorrectFormatCSV()
+    str(data)
+  })
+  output$asRDSCSV <- downloadHandler(filename = function() {
+    paste0("RawDataCompressed_", Sys.Date(), ".rds")
+  },
+  content = function(file) {
+    save_list <- toCorrectFormatCSV()
+    saveRDS(save_list, file)
+  })
+  output$columnCSV <- renderUI({
+    data<-FromCSV()
+    if (is.null(FromCSV()))
+    {return()}
+    else
+    {
+
+      NUM<-dplyr::select_if(as.data.frame(data), is.numeric)
+      Logica<-dplyr::select_if(as.data.frame(data), is.logical)
+      facto<-dplyr::select_if(as.data.frame(data), is.factor)
+      Char<-dplyr::select_if(as.data.frame(data), is.character)
+
+      return(
+        bucket_list(
+          header = "Drag columns in the right bucket",
+          group_name = "bucket_list_group",
+          orientation = "horizontal",
+
+          add_rank_list(
+            text = "Charachter",
+            labels = names(Char),
+            input_id = "rank_list_1"
+          ),
+          add_rank_list(
+            text = "Logical",
+            labels = names(Logica),
+            input_id = "rank_list_2"
+          ),
+          add_rank_list(
+            text = "Factor",
+            labels = names(facto),
+            input_id = "rank_list_3"
+          ),
+          add_rank_list(
+            text = "Numeric",
+            labels = names(NUM),
+            input_id = "rank_list_4"
+          )
+        )
+      )}
+
+  })
+
   # Section Multivariate descriptive analysis Server ------------------------------
   
   Data <- reactive({
@@ -1357,6 +1353,17 @@ server <- function(input, output) {
     paste('Imputed_',input$ImpTech, ".csv", sep = "")
   },content = function(file) {
     write.csv(Imputed(), file, row.names = FALSE)
+  })
+  
+  
+  
+  
+  output$dwnImprds <- downloadHandler(filename = function() {
+    paste0('Imputed_'          ,input$ImpTech, ".rds")
+  },
+  content = function(file) {
+    save_list <- Imputed()
+    saveRDS(save_list, file)
   })
   # Section DataBalance Server ------------------------------
   To3Dplot <- reactive({
