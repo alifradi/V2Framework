@@ -101,15 +101,15 @@ body <- dashboardBody(
                          fileInput('fileInCSV', 'Upload your  CSV File here'),
                          downloadButton("asRDSCSV", "As RDS data"),
                          width = 3  ),
-                      box(background = "olive", solidHeader = TRUE,
-                          dataTableOutput("TABLookCSV"),
-                          style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-                          width = 9, title = 'Preview data: head' )
-                     ),
+                     box(background = "olive", solidHeader = TRUE,
+                         dataTableOutput("TABLookCSV"),
+                         style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+                         width = 9, title = 'Preview data: head' )
+            ),
             uiOutput('columnCSV'),
             verbatimTextOutput('strDataCSV') 
-         
-                 
+            
+            
     ),
     
     
@@ -463,12 +463,12 @@ server <- function(input, output) {
   toCorrectFormatCSV <- reactive({
     req(FromCSV)
     data<-FromCSV()
-
+    
     NUM <- input$rank_list_4
     Logical <- input$rank_list_2
     Factor <- input$rank_list_3
     Char <- input$rank_list_1
-
+    
     df = data.frame(matrix(ncol = 1, nrow = nrow(data)))
     if(length(NUM)>0){
       NumData <- data %>% mutate_if(names(data) %in% NUM, as.numeric)
@@ -521,18 +521,18 @@ server <- function(input, output) {
     {return()}
     else
     {
-
+      
       NUM<-dplyr::select_if(as.data.frame(data), is.numeric)
       Logica<-dplyr::select_if(as.data.frame(data), is.logical)
       facto<-dplyr::select_if(as.data.frame(data), is.factor)
       Char<-dplyr::select_if(as.data.frame(data), is.character)
-
+      
       return(
         bucket_list(
           header = "Drag columns in the right bucket",
           group_name = "bucket_list_group",
           orientation = "horizontal",
-
+          
           add_rank_list(
             text = "Charachter",
             labels = names(Char),
@@ -555,9 +555,9 @@ server <- function(input, output) {
           )
         )
       )}
-
+    
   })
-
+  
   # Section Multivariate descriptive analysis Server ------------------------------
   
   Data <- reactive({
