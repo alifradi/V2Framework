@@ -156,6 +156,26 @@ body <- dashboardBody(
             
             
     ),
+    # Section Exploring missings ------------------------------
+    # tabItem(tabName = "EM", h2("Exploration des données manquantes"),
+    #         fluidRow(box(title = "Inputs", background = "navy", solidHeader = TRUE,
+    #                      fileInput('file2', 'Télécharger votre fichier RDS ici'),
+    #                      uiOutput('centFeatures'),
+    #                      downloadButton("CM", "Télécharger la matrice centrée"),
+    #                      uiOutput('cluscheckbox') ),
+    #                  box(title = "Variables à valeurs manquantes", solidHeader = TRUE,uiOutput('missReport'),
+    #                      style = "height:350px; overflow-y: scroll;overflow-x: scroll;",
+    #                      width = 6)),
+    #         fluidRow(uiOutput('plot3UI')),
+    #         
+    #         fluidRow( h2("Dépendance de manque de données")),
+    #         
+    #         fluidRow(box(uiOutput('tracker')),box(uiOutput('tracked'))),
+    #         fluidRow(box(uiOutput('plotdenstrack')),box(uiOutput('plotboxtrack'))),
+    #         fluidRow(box(uiOutput('MissV1'),uiOutput('MissV2')),box(uiOutput('plotBimiss')))
+    #         
+    #         
+    # ),
     # Section Features categorization ------------------------------
     tabItem(tabName = "FC",  h2("Features categorization"),
             
