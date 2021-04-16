@@ -97,6 +97,21 @@ body <- dashboardBody(
             
             
     ),
+    tabItem(tabName = "CSVInput", h2("Compress CSV to RDS"),
+            fluidRow(box(background = "navy", solidHeader = TRUE,
+                         fileInput('fileInCSV', 'Upload your  CSV File here'),
+                         downloadButton("asRDSCSV", "As RDS data"),
+                         width = 3  ),
+                     box(background = "olive", solidHeader = TRUE,
+                         dataTableOutput("TABLookCSV"),
+                         style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+                         width = 9, title = 'Preview data: head' )
+            ),
+            uiOutput('columnCSV'),
+            verbatimTextOutput('strDataCSV') 
+            
+            
+    ),
     # Section Univariate descriptive analysis ------------------------------
     tabItem(tabName = "UVA", h2("Analyse univariée descriptive"),
             fluidRow(box(title = "Inputs", background = "navy", solidHeader = TRUE,
